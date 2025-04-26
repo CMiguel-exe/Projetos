@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Pagamento</title>
+</head>
+<body>
+    <h1>Registrar Pagamento (livre)</h1>
+    <form method="post">
+        <label>ID do Cliente:</label>
+        <input type="number" name="cliente_id" id="cliente_id" required><br><br>
+
+        <div id="info_cliente" style="display:none; border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            <strong>Nome:</strong> <span id="nome_cliente"></span><br>
+            <strong>Telefone:</strong> <span id="telefone_cliente"></span><br>
+            <strong>CPF:</strong> <span id="cpf_cliente"></span>
+        </div>
+
+        <label>Valor:</label>
+        <input type="number" name="valor" step="0.01" required><br><br>
+
+        <label>Descrição:</label>
+        <input type="text" name="descricao"><br><br>
+
+        <button type="submit">Registrar Pagamento</button>
+    </form>
+    <a href="/clientes">← Voltar</a>
+
+    <script>
+        const input = document.getElementById("cliente_id");
+        const info = document.getElementById("info_cliente");
+        const nome = document.getElementById("nome_cliente");
+        const tel = document.getElementById("telefone_cliente");
+        const cpf = document.getElementById("cpf_cliente");
+
+        input.addEventListener("blur", () => {
+            const id = input.value;
+            if (id) {
+                fetch(`/api/cliente/${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.erro) {
+                            info.style.display = "none";
+                            alert("Cliente não encontrado");
+                        } else {
+                            nome.textContent = data.nome;
+                            tel.textContent = data.telefone;
+                            cpf.textContent = data.cpf;
+                            info.style.display = "block";
+                        }
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
